@@ -1,0 +1,108 @@
+<?php
+
+namespace Modules\$MODULE_NAME$\DataTables;
+
+use Modules\$MODULE_NAME$\Entities\$CLASS_NAME$;
+use Yajra\DataTables\Html\Button;
+use Yajra\DataTables\Html\Column;
+use Yajra\DataTables\Services\DataTable;
+use Yajra\DataTables\Html\Editor\Fields;
+use Yajra\DataTables\Html\Editor\Editor;
+
+class $CLASS_NAME$DataTable extends DataTable
+{
+   /**
+     * Build DataTable class.
+     *
+     * @param mixed $query Results from query() method.
+     * @return \Yajra\DataTables\DataTableAbstract
+     */
+    public function dataTable($query)
+    {
+        return datatables()
+            ->eloquent($query)
+            ->addColumn('action', '$PLURAL_LOWERCASE_CLASS_NAME$.action');
+    }
+
+    /**
+     * Get query source of dataTable.
+     *
+     * @param \App\Test $model
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function query($CLASS_NAME$ $model)
+    {
+        return $model->newQuery();
+    }
+
+    /**
+     * Optional method if you want to use html builder.
+     *
+     * @return \Yajra\DataTables\Html\Builder
+     */
+    public function html()
+    {
+        return $this->builder()
+                    ->setTableId('$LOWERCASE_MODULE_NAME$-$PLURAL_LOWERCASE_CLASS_NAME$-table')
+                    ->parameters([
+                        'colReorder' => true,
+                        'language' => [
+                            'url' => asset("modules/core/js/vendor/datatables/".locale().".json")
+                                ],
+                        'stateSave' => true,
+                        'stateSaveCallback' => "function(settings,data) {
+                                    console.log(data);
+                                    localStorage.setItem( '$LOWERCASE_MODULE_NAME$-$PLURAL_LOWERCASE_CLASS_NAME$-table', JSON.stringify(data) );
+                                    }",
+                                'stateLoadCallback' => "function(settings) {
+                                    console.log(JSON.parse(localStorage.getItem( '$LOWERCASE_MODULE_NAME$-$PLURAL_LOWERCASE_CLASS_NAME$-table' )));
+                                    return JSON.parse( localStorage.getItem( '$LOWERCASE_MODULE_NAME$-$PLURAL_LOWERCASE_CLASS_NAME$-table' ) )
+                                    }",
+                    ])
+                    ->columns($this->getColumns())
+                    ->minifiedAjax(route('api.$LOWERCASE_MODULE_NAME$.$LOWERCASE_CLASS_NAME$.datatables'))
+                    ->dom('Bfrtip')
+                    ->searchDelay('500')
+                    ->orderBy(1)
+                    ->buttons(
+                        Button::make('create'),
+                        Button::make('export'),
+                        Button::make('print'),
+                        Button::make('reset'),
+                        Button::make('reload')
+                    )
+                    ->pagingType('first_last_numbers');
+    }
+
+    /**
+     * Get columns.
+     *
+     * @return array
+     */
+    protected function getColumns()
+    {
+        return [
+            Column::checkbox(),
+            Column::computed('action')
+                  ->exportable(false)
+                  ->printable(false)
+                  ->width(60)
+                  ->addClass('text-center'),
+            Column::make('id'),
+            Column::make('title'),
+            Column::make('description'),
+            Column::make('add your columns'),
+            Column::make('created_at'),
+            Column::make('updated_at'),
+        ];
+    }
+
+    /**
+     * Get filename for export.
+     *
+     * @return string
+     */
+    protected function filename()
+    {
+        return '$LOWERCASE_MODULE_NAME$__$PLURAL_LOWERCASE_CLASS_NAME$' . date('YmdHis');
+    }

@@ -1,4 +1,6 @@
-<?php namespace Modules\Workshop\Scaffold\Module\Generators;
+<?php
+
+namespace Modules\Workshop\Scaffold\Module\Generators;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
@@ -33,6 +35,19 @@ class FilesGenerator extends Generator
 
         return $this;
     }
+    /**
+     * Generate the base module service provider
+     * @return $this
+     */
+    public function generateApiRouter()
+    {
+        $this->writeFile(
+            $this->getModulesPath("Http/apiRoutes"),
+            $this->getContentFor('routes-api.stub')
+        );
+
+        return $this;
+    }
 
     /**
      * Get the content for the given file
@@ -46,8 +61,20 @@ class FilesGenerator extends Generator
         $stub = $this->finder->get($this->getStubPath($stub));
 
         return str_replace(
-            ['$MODULE$', '$LOWERCASE_MODULE$', '$PLURAL_MODULE$', '$UPPERCASE_PLURAL_MODULE$'],
-            [$this->name, strtolower($this->name), strtolower(str_plural($this->name)), str_plural($this->name)],
+            [
+                '$MODULE$',
+                '$LOWERCASE_MODULE$',
+                '$PLURAL_MODULE$',
+                '$UPPERCASE_PLURAL_MODULE$',
+                '$SIDEBAR_LISTENER_NAME$',
+            ],
+            [
+                $this->name,
+                strtolower($this->name),
+                strtolower(str_plural($this->name)),
+                str_plural($this->name),
+                "Register{$this->name}Sidebar",
+            ],
             $stub
         );
     }

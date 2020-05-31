@@ -1,0 +1,6 @@
+
+    $router->post('$PLURAL_LOWERCASE_CLASS_NAME$/datatables', [
+        'as' => 'api.$LOWERCASE_MODULE_NAME$.$LOWERCASE_CLASS_NAME$.datatables',
+        'uses' => '$CLASS_NAME$Controller@datatables',
+    ]);
+// append

@@ -1,0 +1,26 @@
+<?php
+
+namespace Modules\$MODULE_NAME$\Http\Controllers\Api;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Modules\$MODULE_NAME$\DataTables\$CLASS_NAME$DataTable;
+use Illuminate\Routing\Controller;
+use Modules\$MODULE_NAME$\Entities\$CLASS_NAME$;
+
+
+class $CLASS_NAME$Controller extends Controller
+{
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function datatables($CLASS_NAME$DataTable $datatables)
+    {
+        return $datatables->query();
+    }
+
+}
